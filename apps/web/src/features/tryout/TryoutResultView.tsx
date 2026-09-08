@@ -9,6 +9,7 @@ import {
   TryoutCrossIcon,
   TryoutMinusIcon,
   TryoutAccuracyIcon,
+  TryoutAnalyticsIcon,
 } from "./TryoutIcons";
 import Link from "next/link";
 
@@ -186,7 +187,47 @@ export function TryoutResultView({
         </div>
       </div>
 
-      {/* ── 2. Review Kunci Jawaban & Pembahasan ──────────────────────── */}
+      {/* ── 2. Distribusi Capaian per Subdivisi ──────────────────────── */}
+      {hasil.rincianSubdivisi && hasil.rincianSubdivisi.length > 0 && (
+        <div id="tv-tryout-result-subdiv-section" className="tv-tryout-result-subdiv-card">
+          <div className="tv-tryout-section-head">
+            <TryoutAnalyticsIcon size={24} />
+            <div>
+              <h3 className="tv-tryout-section-title">Distribusi Capaian per Subdivisi</h3>
+              <p className="tv-tryout-section-sub">
+                Pemetaan akurasi jawaban Anda pada setiap subdivisi pediatri dalam paket ujian ini
+              </p>
+            </div>
+          </div>
+
+          <div className="tv-tryout-result-subdiv-grid">
+            {hasil.rincianSubdivisi.map((sub) => {
+              const warnaClass =
+                sub.persen >= 80 ? "hijau" : sub.persen >= 60 ? "kuning" : "merah";
+              return (
+                <div key={sub.subdivisi} className="tv-tryout-bar-row">
+                  <div className="tv-tryout-bar-label-group">
+                    <span className="tv-tryout-bar-subdiv-name">{sub.label}</span>
+                    <span className="tv-tryout-bar-ratio">
+                      {sub.benar}/{sub.total} benar ({sub.persen}%)
+                    </span>
+                  </div>
+                  <div className="tv-tryout-bar-track-wrap">
+                    <div className="tv-tryout-bar-track">
+                      <div
+                        className={`tv-tryout-bar-fill ${warnaClass}`}
+                        style={{ width: `${Math.max(sub.persen, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── 3. Review Kunci Jawaban & Pembahasan ──────────────────────── */}
       <div id="tv-tryout-review-section" className="tv-tryout-review-section">
         <div className="tv-tryout-review-header-wrap">
           <div className="tv-tryout-section-head">

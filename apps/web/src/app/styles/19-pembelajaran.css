@@ -413,9 +413,9 @@
 }
 
 .tv-tryout-series-btn.active {
-  background: var(--tv-navy);
+  background: #0a0b5f;
   color: #ffffff;
-  border-color: var(--tv-navy);
+  border-color: #0a0b5f;
   box-shadow: 0 3px 10px rgba(10, 11, 95, 0.16);
 }
 
@@ -1510,7 +1510,7 @@
 /* State Saat Belum Ada Data Evaluasi */
 .tv-tryout-empty-eval-box {
   background: #f8fafc;
-  border: 1.5px dashed #cbd5e1;
+  border: 1.5px dashed #ff30a3;
   border-radius: 16px;
   padding: 1.75rem;
   display: flex;
@@ -1902,6 +1902,24 @@
 }
 .tv-tryout-hover-badge.lulus { background: #059669; color: #ffffff; }
 .tv-tryout-hover-badge.evaluasi { background: #e11d48; color: #ffffff; }
+
+/* ── Subdivisi Breakdown Card in Result View ──────────────────── */
+.tv-tryout-result-subdiv-card {
+  background: var(--tv-card);
+  border: 1px solid var(--tv-line);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.tv-tryout-result-subdiv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem 1.5rem;
+}
 
 /* ── Section Head Reusable ────────────────────────────────────── */
 .tv-tryout-section-head {
@@ -2421,6 +2439,211 @@ html.dark .tv-tryout-exp-title {
 
 [data-theme="dark"] .tv-tryout-exp-body,
 html.dark .tv-tryout-exp-body {
+  color: #cbd5e1;
+}
+
+/* Dark mode for Tryout Series Filter Buttons */
+[data-theme="dark"] .tv-tryout-series-btn,
+html.dark .tv-tryout-series-btn,
+.dark .tv-tryout-series-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .tv-tryout-series-btn:hover,
+html.dark .tv-tryout-series-btn:hover,
+.dark .tv-tryout-series-btn:hover {
+  background: #273449;
+  border-color: rgba(236, 72, 153, 0.4);
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-series-btn.active,
+html.dark .tv-tryout-series-btn.active,
+.dark .tv-tryout-series-btn.active {
+  background: var(--tv-magenta, #ec4899);
+  border-color: var(--tv-magenta, #ec4899);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+}
+
+[data-theme="dark"] .tv-tryout-series-btn.active:hover,
+html.dark .tv-tryout-series-btn.active:hover,
+.dark .tv-tryout-series-btn.active:hover {
+  background: #db2777;
+  border-color: #db2777;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .tv-tryout-series-pill-count,
+html.dark .tv-tryout-series-pill-count,
+.dark .tv-tryout-series-pill-count {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .tv-tryout-series-btn.active .tv-tryout-series-pill-count,
+html.dark .tv-tryout-series-btn.active .tv-tryout-series-pill-count,
+.dark .tv-tryout-series-btn.active .tv-tryout-series-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Dark mode for Tryout Series Section Headers */
+[data-theme="dark"] .tv-tryout-series-section-header,
+html.dark .tv-tryout-series-section-header,
+.dark .tv-tryout-series-section-header {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .tv-tryout-series-section-title,
+html.dark .tv-tryout-series-section-title,
+.dark .tv-tryout-series-section-title {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-series-section-desc,
+html.dark .tv-tryout-series-section-desc,
+.dark .tv-tryout-series-section-desc {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .tv-tryout-grid-count-badge,
+html.dark .tv-tryout-grid-count-badge,
+.dark .tv-tryout-grid-count-badge {
+  background: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
+  border: 1px solid rgba(236, 72, 153, 0.35);
+}
+
+/* Dark mode for Tryout Evaluation Dashboard */
+[data-theme="dark"] .tv-tryout-empty-eval-box,
+html.dark .tv-tryout-empty-eval-box,
+.dark .tv-tryout-empty-eval-box {
+  background: #1e293b;
+  border-color: #ff30a3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .tv-tryout-empty-eval-icon,
+html.dark .tv-tryout-empty-eval-icon,
+.dark .tv-tryout-empty-eval-icon {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .tv-tryout-empty-eval-title,
+html.dark .tv-tryout-empty-eval-title,
+.dark .tv-tryout-empty-eval-title {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-empty-eval-desc,
+html.dark .tv-tryout-empty-eval-desc,
+.dark .tv-tryout-empty-eval-desc {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .tv-tryout-dash-icon-box,
+html.dark .tv-tryout-dash-icon-box,
+.dark .tv-tryout-dash-icon-box {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.35);
+  color: #4ade80;
+}
+
+[data-theme="dark"] .tv-tryout-dash-title,
+html.dark .tv-tryout-dash-title,
+.dark .tv-tryout-dash-title {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-dash-subtitle,
+html.dark .tv-tryout-dash-subtitle,
+.dark .tv-tryout-dash-subtitle {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .tv-tryout-toggle-sample-btn,
+html.dark .tv-tryout-toggle-sample-btn,
+.dark .tv-tryout-toggle-sample-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .tv-tryout-toggle-sample-btn:hover,
+html.dark .tv-tryout-toggle-sample-btn:hover,
+.dark .tv-tryout-toggle-sample-btn:hover {
+  background: #273449;
+  border-color: var(--tv-magenta, #ec4899);
+  color: var(--tv-magenta, #ec4899);
+}
+
+[data-theme="dark"] .tv-tryout-toggle-sample-btn.active,
+html.dark .tv-tryout-toggle-sample-btn.active,
+.dark .tv-tryout-toggle-sample-btn.active {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: var(--tv-magenta, #ec4899);
+  color: var(--tv-magenta, #ec4899);
+}
+
+[data-theme="dark"] .tv-tryout-kpi-card,
+html.dark .tv-tryout-kpi-card,
+.dark .tv-tryout-kpi-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .tv-tryout-kpi-number,
+html.dark .tv-tryout-kpi-number,
+.dark .tv-tryout-kpi-number {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-chart-card,
+html.dark .tv-tryout-chart-card,
+.dark .tv-tryout-chart-card,
+[data-theme="dark"] .tv-tryout-result-subdiv-card,
+html.dark .tv-tryout-result-subdiv-card,
+.dark .tv-tryout-result-subdiv-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .tv-tryout-chart-title,
+html.dark .tv-tryout-chart-title,
+.dark .tv-tryout-chart-title {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-line-chart-container,
+html.dark .tv-tryout-line-chart-container,
+.dark .tv-tryout-line-chart-container {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .tv-tryout-bar-label-group,
+html.dark .tv-tryout-bar-label-group,
+.dark .tv-tryout-bar-label-group {
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .tv-tryout-bar-track,
+html.dark .tv-tryout-bar-track,
+.dark .tv-tryout-bar-track {
+  background: #334155;
+}
+
+[data-theme="dark"] .tv-tryout-trend-badge,
+html.dark .tv-tryout-trend-badge,
+.dark .tv-tryout-trend-badge {
+  background: #334155;
   color: #cbd5e1;
 }
 
