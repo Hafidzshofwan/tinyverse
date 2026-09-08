@@ -2087,7 +2087,7 @@ html.dark .tv-greeting-hand-icon {
     0 34px 100px rgba(10, 11, 95, 0.2),
     0 10px 30px rgba(10, 11, 95, 0.08);
   backdrop-filter: blur(22px);
-  font-family: "Quicksand", "Inter", system-ui, sans-serif;
+  font-family: "Quicksand", "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 

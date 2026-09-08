@@ -251,7 +251,7 @@ export function KelolaPenggunaPanel() {
   }
 
   return (
-    <div>
+    <div className={gaya.wadah}>
       <h1 className={gaya.judul}>
         <span className={gaya.ikon}>
           <ShieldUserIcon size={22} />
