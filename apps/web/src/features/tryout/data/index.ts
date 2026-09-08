@@ -4,6 +4,7 @@ import { PAKET_PREDIKSI_JITU_2 } from "./prediksiJitu2";
 import { PAKET_PREDIKSI_JITU_3 } from "./prediksiJitu3";
 import { PAKET_PREDIKSI_JITU_4 } from "./prediksiJitu4";
 import { PAKET_PREDIKSI_JITU_5 } from "./prediksiJitu5";
+import { PAKET_PREDIKSI_JITU_6 } from "./prediksiJitu6";
 
 export {
   PAKET_PREDIKSI_JITU,
@@ -11,6 +12,7 @@ export {
   PAKET_PREDIKSI_JITU_3,
   PAKET_PREDIKSI_JITU_4,
   PAKET_PREDIKSI_JITU_5,
+  PAKET_PREDIKSI_JITU_6,
 };
 
 export const PAKET_MINI_CBT_1: PaketTryOut = {
@@ -1047,6 +1049,7 @@ export const PAKET_PREDIKSI_JITU_LIST: PaketTryOut[] = [
   PAKET_PREDIKSI_JITU_3,
   PAKET_PREDIKSI_JITU_4,
   PAKET_PREDIKSI_JITU_5,
+  PAKET_PREDIKSI_JITU_6,
 ];
 
 export const PAKET_MINI_CBT_LIST: PaketTryOut[] = [

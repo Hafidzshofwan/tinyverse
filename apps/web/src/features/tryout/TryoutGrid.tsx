@@ -360,7 +360,7 @@ export function TryoutGrid({
                       Try Out Prediksi Jitu UKNPDPD
                     </h4>
                     <p className="tv-tryout-series-section-desc">
-                      Simulasi intensif 25 soal kasus klinis komprehensif (durasi 25 menit) dengan urutan Paket 1 – 4 berstandar SKDI.
+                      Simulasi intensif 25 soal kasus klinis komprehensif (durasi 25 menit) dengan urutan Paket 1 – 6 berstandar SKDI.
                     </p>
                   </div>
                   <span
