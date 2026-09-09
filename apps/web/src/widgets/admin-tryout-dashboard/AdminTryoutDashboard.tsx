@@ -134,34 +134,61 @@ function waktuRelatif(iso: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Fungsi pengambilan data Firestore (collectionGroup)
+// Fungsi pengambilan data Firestore (per-user, tanpa collectionGroup index)
 // ---------------------------------------------------------------------------
 
+/**
+ * Strategi: baca daftar uid dari koleksi `users` (admin sudah punya akses),
+ * lalu untuk setiap uid ambil sub-koleksi tryoutHistory/{uid}/paket secara paralel.
+ * Tidak butuh Firestore index apapun — tidak ada collectionGroup query.
+ */
 async function ambilSemuaDokumenPaket(): Promise<DokumenPaket[]> {
   const { db } = await initFirebase();
-  // collectionGroup membaca semua sub-koleksi "paket" di bawah tryoutHistory/{uid}
-  // tanpa perlu tahu daftar uid-nya terlebih dahulu.
-  // Butuh Firestore composite index: Collection group "paket", field "__name__" ASC.
-  // Firebase Console biasanya auto-prompt untuk membuat index ini.
+
+  // Langkah 1: ambil semua uid dari koleksi users (admin bisa baca semua)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const snap = await (db as any).collectionGroup("paket").get();
-  const hasil: DokumenPaket[] = [];
+  const usersSnap = await (db as any).collection("users").limit(500).get();
+
+  const uids: string[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  snap.forEach((doc: any) => {
-    const data = doc.data();
-    if (!Array.isArray(data?.riwayat) || data.riwayat.length === 0) return;
-    // Path: tryoutHistory/{uid}/paket/{paketId}
-    const pathParts: string[] = doc.ref.path.split("/");
-    const uid = pathParts[1] ?? "unknown";
-    const paketId = pathParts[3] ?? doc.id;
-    hasil.push({
-      uid,
-      paketId,
-      riwayat: data.riwayat as HasilTryOut[],
-      updatedAt: data.updatedAt ?? 0,
-    });
-  });
-  return hasil;
+  usersSnap.forEach((doc: any) => uids.push(doc.id));
+
+  if (uids.length === 0) return [];
+
+  // Langkah 2: untuk setiap uid, ambil semua dokumen di tryoutHistory/{uid}/paket
+  // Jalankan paralel dengan Promise.all agar cepat
+  const hasilPerUser = await Promise.all(
+    uids.map(async (uid) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const paketSnap = await (db as any)
+          .collection("tryoutHistory")
+          .doc(uid)
+          .collection("paket")
+          .get();
+
+        const dokumen: DokumenPaket[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        paketSnap.forEach((doc: any) => {
+          const data = doc.data();
+          if (!Array.isArray(data?.riwayat) || data.riwayat.length === 0) return;
+          dokumen.push({
+            uid,
+            paketId: doc.id,
+            riwayat: data.riwayat as HasilTryOut[],
+            updatedAt: data.updatedAt ?? 0,
+          });
+        });
+        return dokumen;
+      } catch {
+        // Uid ini tidak punya tryoutHistory atau tidak bisa diakses — skip saja
+        return [];
+      }
+    }),
+  );
+
+  // Flatten array of arrays
+  return hasilPerUser.flat();
 }
 
 // ---------------------------------------------------------------------------
@@ -848,8 +875,7 @@ export function AdminTryoutDashboard() {
         <div className={gaya.galat}>
           <strong>Gagal memuat data.</strong> Pastikan Firestore Rules sudah
           diperbarui untuk mengizinkan admin membaca{" "}
-          <code>tryoutHistory</code>, dan index collectionGroup{" "}
-          <code>paket</code> sudah dibuat di Firebase Console.
+          <code>tryoutHistory</code> dan <code>users</code>.
           <div className={gaya.galatPesan}>{galat}</div>
         </div>
       )}
@@ -992,12 +1018,11 @@ export function AdminTryoutDashboard() {
           )}
 
           <p className={gaya.catatanKaki}>
-            Data dibaca langsung dari Firestore oleh browser admin menggunakan
-            collectionGroup query. UID pengguna disingkat; data jawaban per soal
-            ({" "}
-            <code>jawabanUser</code>) tidak ditampilkan di dashboard ini meski
-            ikut terunduh. Untuk skala besar (&gt;200 user), pertimbangkan migrasi ke
-            Opsi B (API Route + Admin SDK).
+            Data dibaca langsung dari Firestore oleh browser admin — daftar uid
+            dari koleksi <code>users</code>, lalu data tryout per uid secara paralel.
+            UID pengguna disingkat di tabel; data jawaban per soal (<code>jawabanUser</code>)
+            tidak ditampilkan meski ikut terunduh. Untuk skala besar (&gt;200 user),
+            pertimbangkan migrasi ke Opsi B (API Route + Admin SDK).
           </p>
         </>
       )}
