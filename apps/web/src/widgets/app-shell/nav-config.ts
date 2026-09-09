@@ -105,6 +105,18 @@ export const NAV_GROUPS: ReadonlyArray<NavGroup> = [
       { slug: "pembelajaran", label: "Ruang Belajar", icon: "🎓", href: "/preview/pembelajaran", built: true },
     ],
   },
+  {
+    /*
+     * Grup Admin — hanya ditampilkan untuk akun ber-role admin.
+     * Penyaringan dilakukan di komponen AppShell berdasarkan profil.role.
+     * Rute di bawah sudah dilindungi di level halaman (cek profil.role !== "admin").
+     */
+    title: "Admin",
+    items: [
+      { slug: "kelola-pengguna", label: "Kelola Pengguna", icon: "🛡️", href: "/admin/pengguna", built: true },
+      { slug: "dashboard-tryout", label: "Dashboard Tryout", icon: "📊", href: "/admin/tryout-dashboard", built: true },
+    ],
+  },
 ];
 
 // Deskripsi singkat tiap fitur (dipakai kartu Quick Access & Favorit).

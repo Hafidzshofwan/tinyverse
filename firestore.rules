@@ -238,14 +238,28 @@ service cloud.firestore {
      * ============================================================
      *
      * Data disimpan di: tryoutHistory/{uid}/paket/{paketId}
-     * Hanya pemilik akun yang boleh baca dan tulis riwayat tryout-nya sendiri.
+     * Pemilik akun baca & tulis riwayat miliknya sendiri.
+     *
+     * Admin boleh MEMBACA (tidak menulis) seluruh riwayat tryout untuk
+     * keperluan dashboard statistik. Penulisan tetap hanya dari pemilik.
+     *
+     * CATATAN OPSI A (client-side):
+     *   Browser admin menjalankan collectionGroup("paket") yang membaca
+     *   lintas-uid. Rules ini sudah mengizinkan itu melalui admin().
+     *   Diperlukan Firestore Collection Group Index pada koleksi "paket":
+     *   buat di Firebase Console → Firestore → Indexes → Single Field →
+     *   Collection group "paket", field "__name__" Ascending.
+     *   (Biasanya Firebase akan menyediakan tautan langsung di pesan error
+     *   pertama kali query dijalankan.)
      */
 
     match /tryoutHistory/{uid} {
-      allow read, write: if pemilik(uid);
+      allow read:  if pemilik(uid) || admin();
+      allow write: if pemilik(uid);
 
       match /paket/{paketId} {
-        allow read, write: if pemilik(uid);
+        allow read:  if pemilik(uid) || admin();
+        allow write: if pemilik(uid);
       }
     }
 
