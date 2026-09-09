@@ -44,12 +44,20 @@ interface DokumenPaket {
 
 interface StatistikUser {
   uid: string;
+  nama: string;
+  email: string;
   totalSesi: number;
   skorTertinggi: number;
   skorRataRata: number;
   paketDikerjakan: string[];
   terakhirTryout: string; // ISO
   lulusCount: number;
+}
+
+interface ProfilUser {
+  uid: string;
+  nama: string;
+  email: string;
 }
 
 interface StatistikGlobal {
@@ -142,21 +150,34 @@ function waktuRelatif(iso: string): string {
  * lalu untuk setiap uid ambil sub-koleksi tryoutHistory/{uid}/paket secara paralel.
  * Tidak butuh Firestore index apapun — tidak ada collectionGroup query.
  */
-async function ambilSemuaDokumenPaket(): Promise<DokumenPaket[]> {
+interface HasilFetch {
+  dokumen: DokumenPaket[];
+  profilMap: Map<string, ProfilUser>;
+}
+
+async function ambilSemuaData(): Promise<HasilFetch> {
   const { db } = await initFirebase();
 
-  // Langkah 1: ambil semua uid dari koleksi users (admin bisa baca semua)
+  // Langkah 1: ambil semua dokumen users — sekaligus dapat uid, nama, dan email
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const usersSnap = await (db as any).collection("users").limit(500).get();
 
+  const profilMap = new Map<string, ProfilUser>();
   const uids: string[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  usersSnap.forEach((doc: any) => uids.push(doc.id));
+  usersSnap.forEach((doc: any) => {
+    const d = doc.data();
+    uids.push(doc.id);
+    profilMap.set(doc.id, {
+      uid: doc.id,
+      nama: d.nama || d.displayName || "",
+      email: d.email || "",
+    });
+  });
 
-  if (uids.length === 0) return [];
+  if (uids.length === 0) return { dokumen: [], profilMap };
 
   // Langkah 2: untuk setiap uid, ambil semua dokumen di tryoutHistory/{uid}/paket
-  // Jalankan paralel dengan Promise.all agar cepat
   const hasilPerUser = await Promise.all(
     uids.map(async (uid) => {
       try {
@@ -181,21 +202,19 @@ async function ambilSemuaDokumenPaket(): Promise<DokumenPaket[]> {
         });
         return dokumen;
       } catch {
-        // Uid ini tidak punya tryoutHistory atau tidak bisa diakses — skip saja
         return [];
       }
     }),
   );
 
-  // Flatten array of arrays
-  return hasilPerUser.flat();
+  return { dokumen: hasilPerUser.flat(), profilMap };
 }
 
 // ---------------------------------------------------------------------------
 // Fungsi kalkulasi statistik
 // ---------------------------------------------------------------------------
 
-function hitungStatistik(dokumen: DokumenPaket[]): StatistikGlobal {
+function hitungStatistik(dokumen: DokumenPaket[], profilMap: Map<string, ProfilUser>): StatistikGlobal {
   // Kumpulkan semua sesi flat
   const semuaSesi: { sesi: HasilTryOut; uid: string; paketId: string }[] = [];
   for (const dok of dokumen) {
@@ -223,8 +242,11 @@ function hitungStatistik(dokumen: DokumenPaket[]): StatistikGlobal {
   // --- Statistik per user ---
   const userMap = new Map<string, StatistikUser>();
   for (const { sesi, uid, paketId } of semuaSesi) {
+    const profil = profilMap.get(uid);
     const existing = userMap.get(uid) ?? {
       uid,
+      nama: profil?.nama || "",
+      email: profil?.email || "",
       totalSesi: 0,
       skorTertinggi: 0,
       skorRataRata: 0,
@@ -730,7 +752,7 @@ function TabelSemuaUser({
           <thead>
             <tr>
               <th>#</th>
-              <th>UID</th>
+              <th>Pengguna</th>
               <th>Sesi</th>
               <th>Paket</th>
               <th>Skor Tertinggi</th>
@@ -744,9 +766,10 @@ function TabelSemuaUser({
               <tr key={u.uid}>
                 <td className={gaya.tdNomor}>{idx + 1}</td>
                 <td>
-                  <span className={gaya.uid} title={u.uid}>
-                    {u.uid.slice(0, 8)}…
-                  </span>
+                  <div className={gaya.userInfo}>
+                    <span className={gaya.userNama}>{u.nama || "—"}</span>
+                    <span className={gaya.userEmail}>{u.email || u.uid.slice(0, 12) + "…"}</span>
+                  </div>
                 </td>
                 <td className={gaya.tdAngka}>{u.totalSesi}</td>
                 <td className={gaya.tdAngka}>{u.paketDikerjakan.length}</td>
@@ -813,6 +836,7 @@ export function AdminTryoutDashboard() {
   const [loading, setLoading] = useState(true);
   const [galat, setGalat] = useState("");
   const [dokumen, setDokumen] = useState<DokumenPaket[]>([]);
+  const [profilMap, setProfilMap] = useState<Map<string, ProfilUser>>(new Map());
   const [diperbarui, setDiperbarui] = useState("");
   const [tabelExpanded, setTabelExpanded] = useState(false);
   const [tabAktif, setTabAktif] = useState<
@@ -828,8 +852,9 @@ export function AdminTryoutDashboard() {
     setLoading(true);
     setGalat("");
     try {
-      const docs = await ambilSemuaDokumenPaket();
+      const { dokumen: docs, profilMap: pm } = await ambilSemuaData();
       setDokumen(docs);
+      setProfilMap(pm);
       setDiperbarui(FORMAT_JAM.format(new Date()));
     } catch (e) {
       setGalat((e as Error).message);
@@ -843,7 +868,7 @@ export function AdminTryoutDashboard() {
     muat();
   }, [muat]);
 
-  const statistik = useMemo(() => hitungStatistik(dokumen), [dokumen]);
+  const statistik = useMemo(() => hitungStatistik(dokumen, profilMap), [dokumen, profilMap]);
 
   // ---- Render ----
   return (

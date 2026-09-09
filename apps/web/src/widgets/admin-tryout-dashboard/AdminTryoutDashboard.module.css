@@ -487,13 +487,25 @@
   text-align: right;
 }
 
-/* ─── Cell: UID & waktu (tabel pengguna) ───────────────────────────────── */
+/* ─── Cell: Pengguna (nama + email) & waktu (tabel pengguna) ───────────── */
 
-.uid {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.userNama {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kp-teks-primer, #0F172A);
+  line-height: 1.25;
+}
+
+.userEmail {
+  font-size: 11px;
+  font-weight: 500;
   color: var(--kp-teks-redup, #334155);
-  cursor: help;
 }
 
 .loginInfo {

@@ -35,6 +35,17 @@ function LogOutIcon({ size = 16, color = "currentColor" }: { size?: number; colo
   );
 }
 
+function DashboardIcon({ size = 16, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
 function TurIcon({ size = 16, color = "currentColor" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -122,6 +133,16 @@ export function UserMenu({ id }: { id?: string } = {}) {
               onClick={() => setBuka(false)}
             >
               <ShieldUserIcon size={16} /> <span>Kelola pengguna</span>
+            </Link>
+          )}
+          {admin && (
+            <Link
+              href="/admin/tryout-dashboard"
+              className="tv-drop-item"
+              style={{ textDecoration: "none" }}
+              onClick={() => setBuka(false)}
+            >
+              <DashboardIcon size={16} /> <span>Dashboard tryout</span>
             </Link>
           )}
           <button
