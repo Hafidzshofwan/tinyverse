@@ -68,3 +68,53 @@ export function MedicineCardIcon({ jenis, size = 18 }: { jenis?: string; size?: 
 
   return <PillIconSvg size={size} color="#6366F1" />;
 }
+
+export function GantiObatIconSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      <path d="M3 12a9 9 0 0 1 15.55-6.36L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-15.55 6.36L3 16" />
+      <path d="M3 21v-5h5" />
+    </svg>
+  );
+}
+
+export function HitungDosisIconSvg({ size = 18 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      <rect x="4" y="2" width="16" height="20" rx="3" />
+      <line x1="8" y1="6" x2="16" y2="6" strokeWidth="2.2" />
+      <line x1="16" y1="14" x2="16" y2="18" strokeWidth="2.2" />
+      <circle cx="8" cy="10" r="0.75" fill="currentColor" />
+      <circle cx="12" cy="10" r="0.75" fill="currentColor" />
+      <circle cx="16" cy="10" r="0.75" fill="currentColor" />
+      <circle cx="8" cy="14" r="0.75" fill="currentColor" />
+      <circle cx="12" cy="14" r="0.75" fill="currentColor" />
+      <circle cx="8" cy="18" r="0.75" fill="currentColor" />
+      <circle cx="12" cy="18" r="0.75" fill="currentColor" />
+    </svg>
+  );
+}

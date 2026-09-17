@@ -28,7 +28,12 @@
     setVal('summaryNama',nm);
     if(ub!=null)setVal('summaryUsia',usiaTeks(ub));
     if(bb!=null||tb!=null)setVal('summaryBbTb',(bb!=null?bb+' kg':'')+(tb!=null?((bb!=null?' / ':'')+tb+' cm'):''));
-    setVal('tkInputX',ub);setVal('tkInput_berat',bb);setVal('tkInput_tinggi',tb);
+    var isTbTab = false;
+    try {
+      var xLbl = $('tkInputX') ? ($('tkInputX').closest('.form-group')?.querySelector('label')?.textContent || '') : '';
+      isTbTab = /panjang|tinggi/i.test(xLbl);
+    } catch(e){}
+    setVal('tkInputX', isTbTab ? tb : ub); setVal('tkInput_berat',bb); setVal('tkInput_tinggi',tb);
     try{var _tk=(typeof tkState!=='undefined')?tkState:null;if(_tk&&pasien.jk&&_tk.kelamin!==pasien.jk){_tk.kelamin=pasien.jk;if(window.tkRenderKelamin)window.tkRenderKelamin();if(window.tkRenderRingkasan)window.tkRenderRingkasan();if(window.tkRenderStepper)window.tkRenderStepper();}}catch(e){}
   }
   var INX=[

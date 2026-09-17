@@ -414,6 +414,10 @@
 }
 
 .dosis-btn-ganti {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 5px 12px;
   background-color: #ffffff;
   border: 1.5px solid #CBD5E1;
@@ -473,6 +477,10 @@
 }
 
 .dosis-btn-hitung {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 100%;
   padding: 14px 24px;
   background: #0A0B5F;

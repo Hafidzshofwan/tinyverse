@@ -198,12 +198,13 @@ export function GrowthChartTool() {
   const [kelamin, setKelamin] = useState<Kelamin | null>(null);
 
   const [inputX, setInputX] = useState("");
+  const [inputUsia, setInputUsia] = useState("");
   const [inputBerat, setInputBerat] = useState("");
   const [inputTinggi, setInputTinggi] = useState("");
   /** Lingkar Kepala — tidak ada di profil pasien, selalu diinput manual. */
   const [inputLK, setInputLK] = useState("");
   /** Menandai nilai yang diisi otomatis dari profil pasien (boleh ditimpa isi terbaru). */
-  const auto = useRef({ x: true, berat: true, tinggi: true });
+  const auto = useRef({ usia: true, berat: true, tinggi: true });
 
   const [hasil, setHasil] = useState<HasilPlot | null>(null);
   const [unduhSibuk, setUnduhSibuk] = useState<string | null>(null);
@@ -289,34 +290,45 @@ export function GrowthChartTool() {
     // Pasien berganti: kolom dikembalikan ke milik pasien baru - termasuk
     // dikosongkan bila pasien baru belum punya nilainya. Menahan angka lama
     // berisiko: angka milik pasien lain bisa ikut terplot.
-    auto.current = { x: true, berat: true, tinggi: true };
-    // Sumbu X tidak selalu umur: pada BB/PB & BB/TB isinya sentimeter.
-    setInputX(nilaiXBawaan(indikatorPenuh?.xField, pasien.usiaBulan, pasien.tb));
+    auto.current = { usia: true, berat: true, tinggi: true };
+    const usiaStr = pasien.usiaBulan != null ? String(pasien.usiaBulan) : "";
+    const tbStr = pasien.tb != null ? String(pasien.tb) : "";
+    const bbStr = pasien.bb != null ? String(pasien.bb) : "";
+
+    setInputUsia(usiaStr);
+    setInputTinggi(tbStr);
+    setInputBerat(bbStr);
+    setInputLK("");
+    setHasil(null);
+
+    // Sumbu X tidak selalu umur: pada BB/PB & BB/TB isinya sentimeter (tinggi/panjang badan).
+    const xVal = nilaiXBawaan(indikatorPenuh?.xField, pasien.usiaBulan, pasien.tb);
+    setInputX(xVal);
+
     // Tebakan awal cara ukur dari umur; pengguna tetap bisa menimpanya.
     if (pasien.usiaBulan != null) setCaraUkur(caraUkurDariUsia(pasien.usiaBulan));
-    setInputBerat(pasien.bb != null ? String(pasien.bb) : "");
-    setInputTinggi(pasien.tb != null ? String(pasien.tb) : "");
-    // LK tidak ada di profil pasien — selalu kosong saat pasien berganti.
-    setInputLK("");
-    // Hasil plot milik pasien sebelumnya wajib ikut hilang; bila dibiarkan, ia
-    // terbaca seolah-olah hasil pasien yang baru saja dipilih.
-    setHasil(null);
     if (pasien.jk === "male" || pasien.jk === "female") setMphKelamin(pasien.jk);
-    // Sengaja hanya bergantung pada identitas pasien: objek profil bisa saja
-    // dibuat ulang tanpa isinya berubah, dan itu tidak boleh menghapus ketikan.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kunciPasien]);
+  }, [kunciPasien, indikatorPenuh?.xField, pasien.usiaBulan, pasien.tb, pasien.bb, pasien.jk]);
 
   /*
    * Berpindah indikator dapat mengubah ARTI kolom X: dari umur (bulan) menjadi
    * panjang/tinggi (cm). Angka 18 yang tadinya berarti 18 bulan akan terbaca
    * sebagai 18 cm bila dibiarkan, jauh di luar tabel dan sangat menyesatkan.
-   * Karena itu kolom X diisi ulang dari profil pasien, KECUALI bila pengguna
-   * sudah mengetik sendiri (auto.current.x === false), yang tidak boleh ditimpa.
+   * Karena itu kolom X diisi ulang:
+   * - bila xField === "tinggi" (BB/PB & BB/TB), kolom X WAJIB mengikuti panjang/tinggi
+   *   badan (inputTinggi atau pasien.tb).
+   * - bila xField !== "tinggi" (BB/U, TB/U, IMT/U, LK/U), kolom X mengikuti umur
+   *   (inputUsia atau pasien.usiaBulan).
    */
   useEffect(() => {
-    if (!auto.current.x) return;
-    setInputX(nilaiXBawaan(indikatorPenuh?.xField, pasien.usiaBulan, pasien.tb));
+    if (indikatorPenuh?.xField === "tinggi") {
+      const tbVal = inputTinggi || (pasien.tb != null ? String(pasien.tb) : "");
+      setInputX(tbVal);
+    } else {
+      const usiaVal = inputUsia || (pasien.usiaBulan != null ? String(pasien.usiaBulan) : "");
+      setInputX(usiaVal);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indikatorPenuh?.xField]);
 
@@ -1269,8 +1281,15 @@ export function GrowthChartTool() {
                   inputMode="decimal"
                   value={inputX}
                   onChange={(e) => {
-                    auto.current.x = false;
-                    setInputX(e.target.value);
+                    const val = e.target.value;
+                    setInputX(val);
+                    if (indikator?.xField === "tinggi") {
+                      auto.current.tinggi = false;
+                      setInputTinggi(val);
+                    } else {
+                      auto.current.usia = false;
+                      setInputUsia(val);
+                    }
                   }}
                 />
               </div>
@@ -1310,7 +1329,11 @@ export function GrowthChartTool() {
                       setInputLK(e.target.value);
                     } else {
                       auto.current.tinggi = false;
-                      setInputTinggi(e.target.value);
+                      const val = e.target.value;
+                      setInputTinggi(val);
+                      if (indikator?.xField === "tinggi") {
+                        setInputX(val);
+                      }
                     }
                   }}
                 />

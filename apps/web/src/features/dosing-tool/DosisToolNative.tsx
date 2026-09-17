@@ -14,7 +14,9 @@ import {
   RakObatHeaderIcon,
   KalkulatorHeaderIcon,
   SearchIconSvg,
-  MedicineCardIcon
+  MedicineCardIcon,
+  GantiObatIconSvg,
+  HitungDosisIconSvg,
 } from "./MedicineIcons";
 import "./dosing-tool.css";
 
@@ -379,7 +381,8 @@ export function DosisToolNative() {
               className="dosis-btn-ganti"
               onClick={handleScrollToLibrary}
             >
-              🔄 Ganti Obat
+              <GantiObatIconSvg size={14} />
+              <span>Ganti Obat</span>
             </button>
           </div>
 
@@ -457,7 +460,8 @@ export function DosisToolNative() {
             className="dosis-btn-hitung"
             onClick={handleHitung}
           >
-            ✨ Hitung Dosis
+            <HitungDosisIconSvg size={18} />
+            <span>Hitung Dosis</span>
           </button>
 
           {/* Results Display */}
